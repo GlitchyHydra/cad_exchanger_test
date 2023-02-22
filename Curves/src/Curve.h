@@ -38,13 +38,7 @@ class CURVELIBRARY_API Circle : public Curve
 public:
 	Circle(float radius);
 
-	Circle(Circle&& rhs) noexcept;
-	Circle& operator=(Circle&& rhs) noexcept;
-
-	Circle(const Circle& rhs);
-	Circle& operator=(const Circle& rhs);
-
-	friend bool CURVELIBRARY_API operator<(const Circle& left, const Circle& right);
+	friend bool CURVELIBRARY_API operator<(const Circle& lhs, const Circle& rhs);
 
 	virtual Vector3d GetPoint(float t) const override;
 	virtual Vector3d GetGradient(float t) const override;
@@ -57,7 +51,7 @@ class CURVELIBRARY_API Ellipse : public Curve
 	float m_RadiusHorizontal;
 	float m_RadiusVertical;
 public:
-	Ellipse(float horizontal_radius, float vertical_radius);
+	Ellipse(float horizontalRadius, float verticalRadius);
 
 	virtual Vector3d GetPoint(float t) const override;
 	virtual Vector3d GetGradient(float t) const override;

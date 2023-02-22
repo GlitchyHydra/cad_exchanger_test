@@ -52,7 +52,7 @@ void generate_curves_randomly(std::vector<curve_ref>& curves, size_t size = 10)
 	
 }
 
-void print_all_at_t(std::vector<curve_ref>& curves, float t = M_PI / 4.f)
+void print_curves_at_t(std::vector<curve_ref>& curves, float t = M_PI / 4.f)
 {
 	for (auto& curve : curves)
 	{
@@ -77,7 +77,6 @@ bool circle_comp(const std::shared_ptr<Circle>& lhs, const std::shared_ptr<Circl
 	return *lhs < *rhs;
 }
 
-
 float calculate_total_sum(const std::vector<std::shared_ptr<Circle>>& circles)
 {
 	float totalSum = 0.f;
@@ -88,12 +87,12 @@ float calculate_total_sum(const std::vector<std::shared_ptr<Circle>>& circles)
 	return totalSum;
 }
 
-struct Sum
+struct CircleRadiiSum
 {
 	float m_TotalSum;
 
-	Sum() : m_TotalSum(0) {}
-	Sum(Sum& s, tbb::split) { m_TotalSum = 0; }
+	CircleRadiiSum() : m_TotalSum(0) {}
+	CircleRadiiSum(CircleRadiiSum& s, tbb::split) { m_TotalSum = 0; }
 
 	void operator()(const tbb::blocked_range<std::vector<std::shared_ptr<Circle>>::const_iterator>& r)
 	{
@@ -105,14 +104,14 @@ struct Sum
 		m_TotalSum = tempSum;
 	}
 
-	void join(Sum& rhs) { m_TotalSum += rhs.m_TotalSum; }
+	void join(CircleRadiiSum& rhs) { m_TotalSum += rhs.m_TotalSum; }
 };
 
 float calculate_total_sum_concurrently(const std::vector<std::shared_ptr<Circle>>& circles)
 {
-	Sum sum;
-	tbb::parallel_reduce(tbb::blocked_range(circles.begin(), circles.end()), sum);
-	return sum.m_TotalSum;
+	CircleRadiiSum circleRadiiSum;
+	tbb::parallel_reduce(tbb::blocked_range(circles.begin(), circles.end()), circleRadiiSum);
+	return circleRadiiSum.m_TotalSum;
 }
 
 int main()
@@ -123,7 +122,7 @@ int main()
 	generate_curves_randomly(curves, 100);
 
 	//3. Print coordinates of points and derivatives of all curves in the container at t=PI/4.
-	print_all_at_t(curves);
+	print_curves_at_t(curves);
 
 	//4. Populate a second container that would contain only circles from the first container. Make sure the
 	//second container shares(i.e. not clones) circles of the first one, e.g.via pointers

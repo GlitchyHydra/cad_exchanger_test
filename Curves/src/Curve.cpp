@@ -13,34 +13,11 @@ Circle::Circle(float radius)
 		throw IllegalCurveParameterException();
 }
 
-Circle::Circle(Circle&& rhs) noexcept
-	: m_Radius(rhs.m_Radius)
-{
-
-}
-
-Circle::Circle(const Circle& rhs)
-	: m_Radius(rhs.m_Radius)
-{
-}
-
-Circle& Circle::operator=(const Circle& rhs)
-{
-	m_Radius = rhs.m_Radius;
-	return *this;
-}
-
-Circle& Circle::operator=(Circle&& rhs) noexcept
-{
-	m_Radius = rhs.m_Radius;
-	return  *this;
-}
-
 Vector3d Circle::GetPoint(float t) const
 {
-	float x = m_Radius * sin(t);
-	float y = m_Radius * cos(t);
-	return Vector3d{ x, y, 0.f };
+	float x = m_Radius * cos(t);
+	float y = m_Radius * sin(t);
+	return { x, y, 0.f };
 }
 
 Vector3d Circle::GetGradient(float t) const
@@ -50,15 +27,15 @@ Vector3d Circle::GetGradient(float t) const
 	return { x, y , 0};
 }
 
-bool operator<(const Circle& left, const Circle& right)
+bool operator<(const Circle& lhs, const Circle& rhs)
 {
-	return left.m_Radius < right.m_Radius;
+	return lhs.m_Radius < rhs.m_Radius;
 }
 
 /*--------------------------Ellipse--------------------------------*/
 
-Ellipse::Ellipse(float horizontal_radius, float vertical_radius)
-	: m_RadiusHorizontal(horizontal_radius), m_RadiusVertical(vertical_radius)
+Ellipse::Ellipse(float horizontalRadius, float verticalRadius)
+	: m_RadiusHorizontal(horizontalRadius), m_RadiusVertical(verticalRadius)
 {
 	if (m_RadiusHorizontal < EPSILON || m_RadiusVertical < EPSILON)
 		throw IllegalCurveParameterException();
@@ -108,4 +85,3 @@ std::ostream& operator<<(std::ostream& out, const Vector3d& vec3d)
 	out << vec3d.z;
 	return out;
 }
-
